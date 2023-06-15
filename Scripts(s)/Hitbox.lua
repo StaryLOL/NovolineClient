@@ -25,11 +25,11 @@ local playerNames = {}
 local teamNames = {}
 
 -- thanks inori and wally
-local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/Library.lua'))()
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/StaryLOL/NovolineHub/main/Library/.lua'))()
 local SaveManager = loadstring(game:HttpGet('https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/addons/SaveManager.lua'))()
 SaveManager:SetLibrary(Library)
 SaveManager:SetFolder("HitboxExtender")
-Library:Notify("hai :3")
+Library:Notify("modded by star")
 local mainWindow = Library:CreateWindow("Personal object of abuse")
 
 local mainTab = mainWindow:AddTab("Main")
