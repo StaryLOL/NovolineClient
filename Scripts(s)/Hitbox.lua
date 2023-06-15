@@ -25,11 +25,11 @@ local playerNames = {}
 local teamNames = {}
 
 -- thanks inori and wally
-local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/StaryLOL/NovolineHub/main/Library/.lua'))()
-local SaveManager = loadstring(game:HttpGet('https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/addons/SaveManager.lua'))()
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/Library.lua'))()
+local SaveManager = loadstring(game:HttpGet('https://raw.githubusercontent.com/StaryLOL/NovolineHub/main/Library/Linoria.lua'))()
 SaveManager:SetLibrary(Library)
 SaveManager:SetFolder("HitboxExtender")
-Library:Notify("modded by star")
+Library:Notify("hai :3")
 local mainWindow = Library:CreateWindow("Personal object of abuse")
 
 local mainTab = mainWindow:AddTab("Main")
@@ -54,14 +54,16 @@ local ignoreSelfTeamToggled = ignoresGroupbox:AddToggle("ignoreSelfTeamToggled",
 local ignoreSelectedTeamsToggled = ignoresGroupbox:AddToggle("ignoreSelectedTeamsToggled", {Text = "Ignore Selected Teams"})
 local ignoreTeamList = ignoresGroupbox:AddDropdown("ignoreTeamList", {Text = "Teams", AllowNull = true, Multi = true, Values = teamNames})
 
+-- thanks roblox dev forum
 local function CheckTableEquality(t1,t2)
     for i,v in next, t1 do if t2[i]~=v then return false end end
     for i,v in next, t2 do if t1[i]~=v then return false end end
     return true
 end
 
+-- updates the player list
 task.spawn(function()
-    while true do task.wait() 
+    while true do task.wait() -- if you cry about while true do loops then kys
         local temp = {}
         for i,v in ipairs(game.Players:GetPlayers()) do
             if v ~= lPlayer then
@@ -77,6 +79,7 @@ task.spawn(function()
     end
 end)
 
+-- updates the team list
 task.spawn(function()
     while true do task.wait()
         local temp = {}
@@ -92,9 +95,24 @@ task.spawn(function()
     end
 end)
 
+--task.spawn(function()
+--    while true do task.wait()
+--        local temp = {}
+--        for i,v in ipairs(npcs) do
+--            temp[i] = v.Name
+--        end
+--        if not CheckTableEquality(npcNames, temp) then
+--            ignoreNpcList.Values = temp
+--            ignoreNpcList:SetValues()
+--            ignoreNpcList:Display()
+--        end
+--    end
+--end)
+
 SaveManager:BuildConfigSection(mainTab)
 SaveManager:LoadAutoloadConfig()
 
+-- Returns a table of every possible bodypart in a character, or nil if the character does not exist.
 local function getBodyParts(character)
     local humanoid = character:WaitForChild("Humanoid")
     local parts = {
@@ -137,6 +155,7 @@ local function getBodyParts(character)
     return parts
 end
 
+-- Main function that allows the character passed to be expanded at will
 local function extendCharacter(character)
     local player = game.Players:GetPlayerFromCharacter(character)
     local timer = 0
@@ -144,6 +163,7 @@ local function extendCharacter(character)
     local collisions = {}
     local CharacterAdded = {}
     local bodyParts = getBodyParts(character)
+    --Sets up original sizes, creates collision constraints, and creates hooks to bypass localscript anticheats
     local function setup(i, v)
         if not originals[i] then
             originals[i] = {}
@@ -178,6 +198,7 @@ local function extendCharacter(character)
         end
         if not collisions[i] then
             collisions[i] = {}
+            -- thanks to GameGuy#5286 for telling me collision constraints exist
             for o,b in pairs(getBodyParts(lPlayer.Character)) do
                 if o ~= "Humanoid" and type(b) ~= "table" then
                     collisions[i][o] = Instance.new("NoCollisionConstraint", v)
@@ -228,7 +249,8 @@ local function extendCharacter(character)
             end
         end
     end
-  
+    -- resets the properties of the selected part.
+    -- if "all" is passed, will reset every part
     local function reset(part)
         if part == "custompart" or part == "all" then
             local customPart = character:FindFirstChild(customPartNameInput.Value)
@@ -271,7 +293,7 @@ local function extendCharacter(character)
             end
         end
         if ignoreSelfTeamToggled.Value then
-            if game.PlaceId == 2039118386 then
+            if game.PlaceId == 2039118386 then -- Neighborhood War
                 local selfTeam
                 local playerTeam
                 pcall(function()
@@ -301,10 +323,11 @@ local function extendCharacter(character)
         end
         return 0
     end
+    -- here's the actual expander code
     local Heartbeat
     Heartbeat = game:GetService("RunService").Heartbeat:Connect(function(deltaTime)
         timer += deltaTime
-        if timer >= (extenderUpdateRate.Value / 100) then 
+        if timer >= (extenderUpdateRate.Value / 100) then -- divided by 100 because milliseconds
             timer = 0
             local bodyPartList = extenderPartList:GetActiveValues()
             local checks = getChecks()
@@ -373,6 +396,7 @@ for _,player in ipairs(game.Players:GetPlayers()) do
     if player ~= lPlayer then
         task.spawn(function()
             if player.Character then
+                -- why use coroutine.wrap after I've been abusing task.spawn? fuck you that's why
                 coroutine.wrap(extendCharacter)(player.Character)
             end
             player.CharacterAdded:Connect(function(v)
@@ -386,3 +410,4 @@ game.Players.PlayerAdded:Connect(function(player)
         coroutine.wrap(extendCharacter)(v)
     end)
 end)
+-- now, where are my schizo meds?
